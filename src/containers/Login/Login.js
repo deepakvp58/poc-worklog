@@ -3,6 +3,8 @@ import { Button, Form } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import validator from 'validator';
 
+import API from '../../api';
+
 class Login extends Component {
     state = {
         email: '',
@@ -56,17 +58,22 @@ class Login extends Component {
             });
         }
         if(flag === 1){
-            if(this.state.email === 'admin@mail.com' && this.state.password === 'admin') {
-                this.setState({
-                    errors: nonErrors,
-                    isLoggedIn : true
-                });
-            } else {
-                this.setState({
-                    errors: nonErrors
-                });
-                console.log('Error');
-            }
+            const login = {
+                userName: email,
+                password: password
+            };
+            console.log("before api call", login)
+            API.post(`save/login`, login)
+                .then(res => {
+                    console.log(res.data);
+                    this.setState({
+                        errors: nonErrors,
+                        isLoggedIn: res.data
+                    })
+                    if(!this.state.isLoggedIn) {
+                        console.log('Error');
+                    }
+                })
         }
     }
 
@@ -79,6 +86,7 @@ class Login extends Component {
         }
         return (
             <div style={border}>
+                 <h1> GSSP Worklog login</h1>
                 <Form onSubmit={this.loginHandler}>
                     <Form.Group controlId="formBasicEmail">
                         <Form.Label>Email</Form.Label>

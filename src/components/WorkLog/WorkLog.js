@@ -4,63 +4,30 @@ import { Table } from 'react-bootstrap';
 import Aux from '../../hoc/Auxiliary';
 import NavigationBar from '../NavigationBar/NavigationBar';
 import FooterBar from '../FooterBar/FooterBar';
-
-const logData = [
-    {
-        date: '02-03-2021',
-        logDetails: [
-            {
-                task: 'testing',
-                timeSpent: '2'
-            },
-            {
-                task: 'designing',
-                timeSpent: '1'
-            }
-        ]
-    },
-    {
-        date: '02-04-2021',
-        logDetails: [
-            {
-                task: 'testing',
-                timeSpent: '1'
-            },
-            {
-                task: 'developing',
-                timeSpent: '3'
-            }
-        ]
-    },
-    {
-        date: '02-05-2021',
-        logDetails: [
-            {
-                task: 'deploying',
-                timeSpent: '2'
-            },
-            {
-                task: 'devoloping',
-                timeSpent: '2'
-            }
-        ]
-    },
-    {
-        date: '02-06-2021',
-        logDetails: [
-            {
-                task: 'deploying',
-                timeSpent: '3'
-            },
-            {
-                task: 'testing',
-                timeSpent: '1'
-            }
-        ]
-    }
-];
+import API from '../../api';
 
 class WorkLog extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            employeeName: this.props.location.propsValue.employeeName,
+            logData: []
+        }
+    }
+
+    componentDidMount() {
+        API.get(`view/viewDetails/${this.state.employeeName}`)
+            .then(response => {
+                console.log(response.data)
+                const logData = response.data;
+                this.setState({
+                    logData
+                });
+            })
+        
+    }
+
     render() {
         const border = {
             marginBottom: '65%'
@@ -72,26 +39,20 @@ class WorkLog extends Component {
                     <thead>
                         <tr>
                             <th>Date</th>
-                            <th>Project-Met Life</th>
-                            <th>Project-Met Life:Effort</th>
-                            <th>Project-GSSP</th>
-                            <th>Project-GSSP:Effort</th>
+                            <th>Project Name</th>
+                            <th>Work done</th>
+                            <th>Time spent</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            logData.map((data, index) => {
+                            this.state.logData.map((data, index) => {
                                 return (
                                     <tr key={index}>
-                                        <td>{data.date}</td>
-                                        {
-                                            data.logDetails.map((logDetail, index) => {
-                                                return <Aux key={index}>
-                                                        <td>{logDetail.task}</td>
-                                                        <td>{logDetail.timeSpent}</td>
-                                                </Aux>
-                                            })
-                                        }
+                                        <td>{data.loggedDate}</td>
+                                        <td>{data.projectName}</td>
+                                        <td>{data.taskDone}</td>
+                                        <td>{data.timeSpentOnProject}</td>
                                     </tr>
                                 )
                             })

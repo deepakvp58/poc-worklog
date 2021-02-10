@@ -15,7 +15,12 @@ class Employee extends Component {
             <Card className="text-center" style={style} hoverable="true">
                 <Card.Title>{this.props.name}</Card.Title>
                 <Card.Subtitle>{this.props.designation}</Card.Subtitle>
-                <Link to="/WorkLog">
+                <Link to={{
+                    pathname: '/WorkLog',
+                    propsValue: {
+                        employeeName: this.props.name
+                    }  
+                }}>
                     <Button variant="primary">View log</Button>
                 </Link>
             </Card>

@@ -4,11 +4,12 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import validator from 'validator';
 
+import API from '../../api';
 import FooterBar from '../FooterBar/FooterBar';
 
 class DetailsForm extends Component {
     state = {
-        names: ['Deepak', 'Rohith', 'Gowri', 'Janet', 'Thripura', 'Gowshik', 'Shiva', 'Bharath', 'Murali', 'Nagarjun'],
+        names: ['Deepak', 'Rohith', 'Gowri', 'Janet', 'Thripura', 'Gowshik', 'Siva', 'Barath', 'Murali', 'Nagarjun'],
         errors: {
             task: '',
             effor: ''
@@ -16,6 +17,7 @@ class DetailsForm extends Component {
     }
 
     submitHandler = (event) => {
+        event.preventDefault();
         let task = event.target.task.value;
         let effort = event.target.effort.value;
         let flag = 1;
@@ -47,10 +49,17 @@ class DetailsForm extends Component {
             });
         }
         if(flag === 1){
-            console.log(event.target.username.value);
-            console.log(event.target.project.value);
-            console.log(event.target.task.value);
-            console.log(event.target.effort.value);
+            const worklog = {
+                employeeName: event.target.username.value,
+                projectName: event.target.project.value,
+                taskDone: task,
+                timeSpentOnProject: effort
+            }
+            API.post(`save/addDetails`, worklog)
+                .then(res => {
+                    alert(res.data);
+                    console.log(res.data);
+                })
             this.setState({
                 errors: nonErrors
             });
